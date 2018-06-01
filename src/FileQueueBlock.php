@@ -8,10 +8,10 @@ class FileQueueBlock
     public $headers = [];
 
     /**
-     * Data class to store the Message data into the filesystem queue
+     * Data class to store the Message data into the filesystem queue.
      *
-     * @param string    $body
-     * @param string[]  $headers
+     * @param string   $body
+     * @param string[] $headers
      */
     public function __construct(string $body, array $headers)
     {

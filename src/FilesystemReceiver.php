@@ -20,7 +20,6 @@ class FilesystemReceiver implements ReceiverInterface
     public function receive(callable $handler): void
     {
         while (!$this->shouldStop) {
-
             $message = $this->connection->get();
             if (!$message) {
                 $handler(null);
@@ -51,5 +50,3 @@ class FilesystemReceiver implements ReceiverInterface
         $this->shouldStop = true;
     }
 }
-
-

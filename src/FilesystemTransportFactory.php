@@ -48,7 +48,7 @@ class FilesystemTransportFactory implements TransportFactoryInterface
         return new FilesystemTransport(
             $this->encoder,
             $this->decoder,
-            Connection::fromDsn($dsn, $options, $this->filesystem, $this->lockFactory)
+            Connection::fromDsn($dsn, $this->filesystem, $this->lockFactory, $options)
         );
     }
 

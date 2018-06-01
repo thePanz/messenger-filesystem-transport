@@ -39,11 +39,17 @@ class Connection
         $this->lock = $lock;
         $this->options = [
             'compress' => filter_var($options['compress'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'loop_sleep'  => filter_var($options['loop_sleep'] ?? 500000, FILTER_VALIDATE_INT),
+            'loop_sleep' => filter_var($options['loop_sleep'] ?? 500000, FILTER_VALIDATE_INT),
         ];
     }
 
-    public static function fromDsn(string $dsn, array $options = [], Filesystem $filesystem, Factory $lockFactory): self
+    public function setup(): void
+    {
+        $this->filesystem->mkdir($this->path);
+        $this->filesystem->touch($this->getQueueFiles());
+    }
+
+    public static function fromDsn(string $dsn, Filesystem $filesystem, Factory $lockFactory, array $options = []): self
     {
         if (false === $parsedUrl = parse_url($dsn)) {
             throw new \InvalidArgumentException(sprintf('The given Filesystem DSN "%s" is invalid.', $dsn));
@@ -68,7 +74,7 @@ class Connection
         return new self($fullPath, $filesystem, $lockFactory->createLock($path), $options);
     }
 
-    public function publish(string $body, array $headers = array()): void
+    public function publish(string $body, array $headers = []): void
     {
         $this->lock->acquire(true);
         if ($this->shouldSetup()) {
@@ -130,13 +136,13 @@ class Connection
             ));
         }
 
-
         $indexFileSize = (int) fstat($indexFile)['size'];
 
         // If the index file is empty, there's nothing to do.
         if (!$indexFileSize) {
             fclose($indexFile);
             $this->lock->release();
+
             return null;
         }
 
@@ -155,7 +161,6 @@ class Connection
             ));
         }
 
-
         fseek($dataFile, -1 * $size, SEEK_END);
         $data = fread($dataFile, $size);
         $dataFileSize = (int) fstat($dataFile)['size'];
@@ -172,27 +177,21 @@ class Connection
         return $block;
     }
 
+    public function getConnectionOptions(): array
+    {
+        return $this->options;
+    }
+
     protected function shouldSetup(): bool
     {
         return !$this->filesystem->exists($this->getQueueFiles());
     }
 
-    public function setup(): void
-    {
-        $this->filesystem->mkdir($this->path);
-        $this->filesystem->touch($this->getQueueFiles());
-    }
-
     private function getQueueFiles(): array
     {
-      return [
+        return [
           self::QUEUE_DATA_FILENAME => $this->path.DIRECTORY_SEPARATOR.self::QUEUE_DATA_FILENAME,
           self::QUEUE_INDEX_FILENAME => $this->path.DIRECTORY_SEPARATOR.self::QUEUE_INDEX_FILENAME,
       ];
-    }
-
-    public function getConnectionOptions(): array
-    {
-        return $this->options;
     }
 }
