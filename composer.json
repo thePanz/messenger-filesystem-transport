@@ -1,0 +1,28 @@
+{
+  "name": "pnz/messenger-filesystem-transport",
+  "type": "library",
+  "description": "Symfony Messenger transport for the filesystem.",
+  "keywords": ["messenger", "queue", "filesystem", "symfony"],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Pnz\\Messenger\\FilesystemTransport\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Pnz\\Messenger\\FilesystemTransport\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^7.1",
+    "symfony/filesystem": "4.1.*",
+    "symfony/lock": "4.1.*",
+    "symfony/messenger": "4.1.*"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}
