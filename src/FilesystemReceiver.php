@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
@@ -24,9 +26,9 @@ class FilesystemReceiver implements ReceiverInterface
             if (!$message) {
                 $handler(null);
 
-                usleep($this->connection->getConnectionOptions()['loop_sleep']);
+                \usleep($this->connection->getConnectionOptions()['loop_sleep']);
                 if (\function_exists('pcntl_signal_dispatch')) {
-                    pcntl_signal_dispatch();
+                    \pcntl_signal_dispatch();
                 }
 
                 continue;
@@ -39,7 +41,7 @@ class FilesystemReceiver implements ReceiverInterface
                 ]));
             } finally {
                 if (\function_exists('pcntl_signal_dispatch')) {
-                    pcntl_signal_dispatch();
+                    \pcntl_signal_dispatch();
                 }
             }
         }

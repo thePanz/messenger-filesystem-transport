@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pnz\Messenger\FilesystemTransport;
 
 class FileQueueBlock

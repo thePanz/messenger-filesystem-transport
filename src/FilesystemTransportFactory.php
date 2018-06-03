@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Filesystem\Filesystem;
@@ -54,6 +56,6 @@ class FilesystemTransportFactory implements TransportFactoryInterface
 
     public function supports(string $dsn, array $options): bool
     {
-        return 0 === strpos($dsn, 'filesystem://');
+        return 0 === \strpos($dsn, 'filesystem://');
     }
 }
