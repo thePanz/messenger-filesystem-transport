@@ -51,27 +51,29 @@ class Connection
 
     public static function fromDsn(string $dsn, Filesystem $filesystem, Factory $lockFactory, array $options = []): self
     {
-        if (false === $parsedUrl = parse_url($dsn)) {
+        // Ensure the scheme is correct, plus the absolute path
+        if (0 !== strpos($dsn, 'filesystem:///')) {
+            throw new \InvalidArgumentException(sprintf('The given DSN "%s" is not valid for the FilesystemTransport, wrong scheme.', $dsn));
+        }
+
+        // Build an URI with the given path, so that we can use the parse_url function
+        $uri = 'scheme://host/'.substr($dsn, 14);
+
+        if (false === $parsedUrl = parse_url($uri)) {
             throw new \InvalidArgumentException(sprintf('The given Filesystem DSN "%s" is invalid.', $dsn));
         }
 
-        $host = $parsedUrl['host'] ?? null;
         $path = $parsedUrl['path'] ?? null;
-
-        if (!$host || !$path) {
+        if (!$path) {
             throw new \InvalidArgumentException(sprintf('The given Filesystem DSN "%s" is invalid: path missing.', $dsn));
         }
 
-        // Rebuild the full path, as the host is now part of the path
-        $fullPath = DIRECTORY_SEPARATOR.$host.($path ? DIRECTORY_SEPARATOR.$path : null);
-
         if (isset($parsedUrl['query'])) {
             parse_str($parsedUrl['query'], $parsedQuery);
-
             $options = array_replace_recursive($options, $parsedQuery);
         }
 
-        return new self($fullPath, $filesystem, $lockFactory->createLock($path), $options);
+        return new self($path, $filesystem, $lockFactory->createLock($path), $options);
     }
 
     public function publish(string $body, array $headers = []): void

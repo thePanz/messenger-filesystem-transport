@@ -42,9 +42,11 @@ Pnz\Messenger\FilesystemTransport\FilesystemTransportFactory:
 ```yaml
 #  config/packages/messenger.yaml
 parameters:
-  # Default ENV value: the queue messages will be stored in the `var/queue` folder,
-  # The trailing `/` is required for match the `filesystem://` schema
-  env(MESSENGER_TRANSPORT_DSN): "filesystem:/%kernel.project_dir%/var/queue"
+  # The path *MUST* specify an absolute path of the directory where the queue will be stored
+  # Example1: the queue messages will be stored in the project's `var/queue` directory
+  env(MESSENGER_TRANSPORT_DSN): "filesystem://%kernel.project_dir%/var/queue"
+  # Example2: use the `/tmp/queue` directory (note the triple `/`)
+  env(MESSENGER_TRANSPORT_DSN): "filesystem:///tmp/queue"
 
 framework:
     messenger:

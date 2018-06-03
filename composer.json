@@ -20,9 +20,15 @@
     "symfony/lock": "4.1.*",
     "symfony/messenger": "4.1.*"
   },
+  "config": {
+    "sort-packages": true
+  },
   "extra": {
     "branch-alias": {
       "dev-master": "0.1.x-dev"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.2"
   }
 }
