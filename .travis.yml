@@ -1,0 +1,68 @@
+language: php
+sudo: false
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+        - $HOME/.cache
+
+env:
+    global:
+        - PHPUNIT_FLAGS="-v"
+
+matrix:
+    fast_finish: true
+    include:
+          # Minimum supported dependencies with the latest and oldest PHP version
+        - php: 7.2
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+        - php: 7.1
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+
+          # Test the latest stable release
+        - php: 7.1
+        - php: 7.2
+          env: PHPUNIT_FLAGS="-v --coverage-text" CS=true # COVERAGE=true
+
+          # Test LTS versions. This makes sure we do not use Symfony packages with version greater
+          # than 3. Read more at https://github.com/symfony/lts
+        - php: 7.2
+          env: DEPENDENCIES="dunglas/symfony-lock:^4"
+
+          # Latest commit to master
+        - php: 7.2
+          env: STABILITY="dev"
+
+    allow_failures:
+          # Dev-master is allowed to fail.
+        - env: STABILITY="dev"
+
+before_install:
+    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
+    - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
+    - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
+
+install:
+    # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
+    - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
+    - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
+    # - ./vendor/bin/simple-phpunit install
+
+before_script:
+  - mkdir -p "$HOME/.cache"
+  - if [[ ! -f $HOME/.cache/php-cs-fixer ]]; then wget https://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O $HOME/.cache/php-cs-fixer && chmod +x $HOME/.cache/php-cs-fixer; fi
+
+script:
+    - composer validate --strict --no-check-lock
+    # simple-phpunit is the PHPUnit wrapper provided by the PHPUnit Bridge component and
+    # it helps with testing legacy code and deprecations (composer require symfony/phpunit-bridge)
+    # - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
+    - ./vendor/bin/phpunit $PHPUNIT_FLAGS
+    - if [[ "$CS" == "true" ]]; then $HOME/.cache/php-cs-fixer --version && $HOME/.cache/php-cs-fixer fix --verbose --diff --dry-run; fi
+
+after_success:
+    # - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+    # - if [[ $COVERAGE = true ]]; then php ocular.phar code-coverage:upload --format=php-clover build/coverage.xml; fi
+
+after_script:
+    # - wget http://tnyholm.se/reporter.phar
+    # - php reporter.phar build:upload

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Filesystem\Filesystem;
@@ -38,8 +40,8 @@ class Connection
         $this->filesystem = $filesystem;
         $this->lock = $lock;
         $this->options = [
-            'compress' => filter_var($options['compress'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'loop_sleep' => filter_var($options['loop_sleep'] ?? 500000, FILTER_VALIDATE_INT),
+            'compress' => \filter_var($options['compress'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'loop_sleep' => \filter_var($options['loop_sleep'] ?? 500000, FILTER_VALIDATE_INT),
         ];
     }
 
@@ -52,25 +54,25 @@ class Connection
     public static function fromDsn(string $dsn, Filesystem $filesystem, Factory $lockFactory, array $options = []): self
     {
         // Ensure the scheme is correct, plus the absolute path
-        if (0 !== strpos($dsn, 'filesystem:///')) {
-            throw new \InvalidArgumentException(sprintf('The given DSN "%s" is not valid for the FilesystemTransport, wrong scheme.', $dsn));
+        if (0 !== \strpos($dsn, 'filesystem:///')) {
+            throw new \InvalidArgumentException(\sprintf('The given DSN "%s" is not valid for the FilesystemTransport, wrong scheme.', $dsn));
         }
 
         // Build an URI with the given path, so that we can use the parse_url function
-        $uri = 'scheme://host/'.substr($dsn, 14);
+        $uri = 'scheme://host/'.\substr($dsn, 14);
 
-        if (false === $parsedUrl = parse_url($uri)) {
-            throw new \InvalidArgumentException(sprintf('The given Filesystem DSN "%s" is invalid.', $dsn));
+        if (false === $parsedUrl = \parse_url($uri)) {
+            throw new \InvalidArgumentException(\sprintf('The given Filesystem DSN "%s" is invalid.', $dsn));
         }
 
         $path = $parsedUrl['path'] ?? null;
         if (!$path) {
-            throw new \InvalidArgumentException(sprintf('The given Filesystem DSN "%s" is invalid: path missing.', $dsn));
+            throw new \InvalidArgumentException(\sprintf('The given Filesystem DSN "%s" is invalid: path missing.', $dsn));
         }
 
         if (isset($parsedUrl['query'])) {
-            parse_str($parsedUrl['query'], $parsedQuery);
-            $options = array_replace_recursive($options, $parsedQuery);
+            \parse_str($parsedUrl['query'], $parsedQuery);
+            $options = \array_replace_recursive($options, $parsedQuery);
         }
 
         return new self($path, $filesystem, $lockFactory->createLock($path), $options);
@@ -86,37 +88,37 @@ class Connection
         $block = new FileQueueBlock($body, $headers);
 
         // Write the block to the data file
-        $dataFile = fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'ab+');
+        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'ab+');
         if (!$dataFile) {
             $this->lock->release();
 
-            throw new \RuntimeException(sprintf(
+            throw new \RuntimeException(\sprintf(
                 'Filesystem queue: unable to open data-file %s',
                 $this->getQueueFiles()[self::QUEUE_DATA_FILENAME]
             ));
         }
 
-        $data = serialize($block);
-        $data = $this->options['compress'] ? gzdeflate($data) : $data;
-        fwrite($dataFile, $data);
-        fclose($dataFile);
+        $data = \serialize($block);
+        $data = $this->options['compress'] ? \gzdeflate($data) : $data;
+        \fwrite($dataFile, $data);
+        \fclose($dataFile);
 
         // The index file contains the list of block sizes with a fixed-length structure
         // This allows a fast fetching of blocks with a direct seek on the data-file
-        $indexFile = fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'ab+');
+        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'ab+');
 
         if (!$dataFile) {
             $this->lock->release();
 
-            throw new \RuntimeException(sprintf(
+            throw new \RuntimeException(\sprintf(
                 'Filesystem queue: unable to open index-file %s. Critical: the queue files are not in sync anymore!',
                 $this->getQueueFiles()[self::QUEUE_DATA_FILENAME]
             ));
         }
 
         // The 'J': unsigned long long (always 64 bit, big endian byte order)
-        fwrite($indexFile, pack('J', \strlen($data)));
-        fclose($indexFile);
+        \fwrite($indexFile, \pack('J', \strlen($data)));
+        \fclose($indexFile);
 
         $this->lock->release();
     }
@@ -128,51 +130,51 @@ class Connection
             $this->setup();
         }
 
-        $indexFile = fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'cb+');
+        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'cb+');
         if (!$indexFile) {
             $this->lock->release();
 
-            throw new \RuntimeException(sprintf(
+            throw new \RuntimeException(\sprintf(
                 'Filesystem queue: unable to open index-file %s',
                 $this->getQueueFiles()[self::QUEUE_DATA_FILENAME]
             ));
         }
 
-        $indexFileSize = (int) fstat($indexFile)['size'];
+        $indexFileSize = (int) \fstat($indexFile)['size'];
 
         // If the index file is empty, there's nothing to do.
         if (!$indexFileSize) {
-            fclose($indexFile);
+            \fclose($indexFile);
             $this->lock->release();
 
             return null;
         }
 
-        fseek($indexFile, -1 * self::LONG_BYTE_LENGTH, SEEK_END);
-        $size = current(unpack('J', fread($indexFile, self::LONG_BYTE_LENGTH)));
-        ftruncate($indexFile, $indexFileSize - self::LONG_BYTE_LENGTH);
-        fclose($indexFile);
+        \fseek($indexFile, -1 * self::LONG_BYTE_LENGTH, SEEK_END);
+        $size = \current(\unpack('J', \fread($indexFile, self::LONG_BYTE_LENGTH)));
+        \ftruncate($indexFile, $indexFileSize - self::LONG_BYTE_LENGTH);
+        \fclose($indexFile);
 
-        $dataFile = fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'cb+');
+        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'cb+');
         if (!$dataFile) {
             $this->lock->release();
 
-            throw new \RuntimeException(sprintf(
+            throw new \RuntimeException(\sprintf(
                 'Filesystem queue: unable to open data-file %s. Critical: the data files are not in sync anymore!',
                 $this->getQueueFiles()[self::QUEUE_DATA_FILENAME]
             ));
         }
 
-        fseek($dataFile, -1 * $size, SEEK_END);
-        $data = fread($dataFile, $size);
-        $dataFileSize = (int) fstat($dataFile)['size'];
+        \fseek($dataFile, -1 * $size, SEEK_END);
+        $data = \fread($dataFile, $size);
+        $dataFileSize = (int) \fstat($dataFile)['size'];
 
-        ftruncate($dataFile, $dataFileSize - $size);
-        fclose($dataFile);
+        \ftruncate($dataFile, $dataFileSize - $size);
+        \fclose($dataFile);
         $this->lock->release();
 
-        $block = unserialize(
-            $this->options['compress'] ? gzinflate($data) : $data,
+        $block = \unserialize(
+            $this->options['compress'] ? \gzinflate($data) : $data,
             [FileQueueBlock::class]
         );
 
@@ -192,8 +194,8 @@ class Connection
     private function getQueueFiles(): array
     {
         return [
-          self::QUEUE_DATA_FILENAME => $this->path.DIRECTORY_SEPARATOR.self::QUEUE_DATA_FILENAME,
-          self::QUEUE_INDEX_FILENAME => $this->path.DIRECTORY_SEPARATOR.self::QUEUE_INDEX_FILENAME,
+          self::QUEUE_DATA_FILENAME => $this->path.\DIRECTORY_SEPARATOR.self::QUEUE_DATA_FILENAME,
+          self::QUEUE_INDEX_FILENAME => $this->path.\DIRECTORY_SEPARATOR.self::QUEUE_INDEX_FILENAME,
       ];
     }
 }
