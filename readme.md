@@ -2,8 +2,9 @@
 
 [![Latest Stable Version](https://poser.pugx.org/pnz/messenger-filesystem-transport/version)](https://packagist.org/packages/pnz/messenger-filesystem-transport)
 [![Total Downloads](https://poser.pugx.org/pnz/messenger-filesystem-transport/downloads)](https://packagist.org/packages/pnz/messenger-filesystem-transport)
-[![Latest Unstable Version](https://poser.pugx.org/pnz/messenger-filesystem-transport/v/unstable)](//packagist.org/packages/pnz/messenger-filesystem-transport)
 [![License](https://poser.pugx.org/pnz/messenger-filesystem-transport/license)](https://packagist.org/packages/pnz/messenger-filesystem-transport)
+[![Latest Unstable Version](https://poser.pugx.org/pnz/messenger-filesystem-transport/v/unstable)](//packagist.org/packages/pnz/messenger-filesystem-transport)
+[![Build Status](https://travis-ci.com/thePanz/messenger-filesystem-transport.svg?branch=master)](https://travis-ci.com/thePanz/messenger-filesystem-transport)
 
 Extends the [Symfony Messenger](https://symfony.com/doc/master/components/messenger.html) component to
 handle the filesystem transport.
