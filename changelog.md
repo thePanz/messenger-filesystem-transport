@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Reference to Symfony bundle "pnz/messenger-filesystem-transport-bundle"
 ### Changed
 ### Deprecated
 ### Fixed
+- Added missing package "symfony/serializer-pack"
 ### Removed
 ### Security
 

@@ -22,8 +22,10 @@ composer require pnz/messenger-filesystem-transport
 This transport handles the `filesystem://` schema, use the `FilesystemTransportFactory`
 to create the transport.
 
-Symfony configuration:
+Symfony configuration: use the [Filesystem Transport Bundle](https://packagist.org/packages/pnz/messenger-filesystem-transport-bundle) Bundle.
 
+
+### Install without the Bundle:
 1. Register the transport factory:
 
 ```yaml
@@ -69,6 +71,6 @@ Example:
 ```bash
 # .env
 
-# Enable compression, and sleep for 0.8 secods during loops if the queue is empty
+# Enable compression, and sleep for 0.8 seconds during loops if the queue is empty
 MESSENGER_TRANSPORT_DSN="filesystem:/%kernel.project_dir%/var/queue/default?compress=true&loop_sleep=800000"
 ```
