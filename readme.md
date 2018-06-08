@@ -72,8 +72,3 @@ Example:
 # Enable compression, and sleep for 0.8 secods during loops if the queue is empty
 MESSENGER_TRANSPORT_DSN="filesystem:/%kernel.project_dir%/var/queue/default?compress=true&loop_sleep=800000"
 ```
-
-## Todo
-- Add PHP CS and static analysis
-- Add tests
-- Implement a bundle to auto-register the `filesystem://` transport
