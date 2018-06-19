@@ -1,0 +1,5 @@
+.gitignore
+.php_cs.dist
+.travis.tml
+/tests export-ignore
+phpunit.xml.dist
