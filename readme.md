@@ -25,7 +25,7 @@ to create the transport.
 Symfony configuration: use the [Filesystem Transport Bundle](https://packagist.org/packages/pnz/messenger-filesystem-transport-bundle) Bundle.
 
 
-### Install without the Bundle:
+### Install without the Symfony Bundle:
 1. Register the transport factory:
 
 ```yaml
