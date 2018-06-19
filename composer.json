@@ -19,7 +19,7 @@
     "symfony/filesystem": "4.1.*",
     "symfony/lock": "4.1.*",
     "symfony/messenger": "4.1.*",
-    "symfony/serializer-pack": "^4.1"
+    "symfony/serializer-pack": "^1.0"
   },
   "config": {
     "sort-packages": true
