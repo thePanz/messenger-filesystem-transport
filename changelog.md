@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 ### Deprecated
 ### Fixed
-- Fixed wrong version for `symfony/serializer-pack` component (closes issue #2)
 ### Removed
 ### Security
+
+## [0.1.2]
+### Added
+- Added GitAttributes file (ignore tests in packaged library)
+### Fixed
+- Fixed wrong version for `symfony/serializer-pack` component (closes issue #2)
 
 ## [0.1.1]
 ### Added
