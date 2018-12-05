@@ -6,20 +6,19 @@ namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Lock\Factory;
-use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
-use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class FilesystemTransportFactory implements TransportFactoryInterface
 {
     /**
-     * @var EncoderInterface
+     * @var SerializerInterface
      */
     private $encoder;
 
     /**
-     * @var DecoderInterface
+     * @var SerializerInterface
      */
     private $decoder;
 
@@ -34,8 +33,8 @@ class FilesystemTransportFactory implements TransportFactoryInterface
     private $lockFactory;
 
     public function __construct(
-        EncoderInterface $encoder,
-        DecoderInterface $decoder,
+        SerializerInterface $encoder,
+        SerializerInterface $decoder,
         Filesystem $filesystem,
         Factory $lockFactory
     ) {

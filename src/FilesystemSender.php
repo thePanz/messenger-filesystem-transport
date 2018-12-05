@@ -6,14 +6,14 @@ namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\SenderInterface;
-use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class FilesystemSender implements SenderInterface
 {
     private $encoder;
     private $connection;
 
-    public function __construct(EncoderInterface $encoder, Connection $connection)
+    public function __construct(SerializerInterface $encoder, Connection $connection)
     {
         $this->encoder = $encoder;
         $this->connection = $connection;

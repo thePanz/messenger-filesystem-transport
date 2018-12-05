@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
-use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class FilesystemTransport implements TransportInterface
@@ -17,7 +16,7 @@ class FilesystemTransport implements TransportInterface
     private $receiver;
     private $sender;
 
-    public function __construct(EncoderInterface $encoder, DecoderInterface $decoder, Connection $connection)
+    public function __construct(SerializerInterface $encoder, SerializerInterface $decoder, Connection $connection)
     {
         $this->encoder = $encoder;
         $this->decoder = $decoder;

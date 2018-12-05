@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
-use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class FilesystemReceiver implements ReceiverInterface
 {
@@ -13,7 +13,7 @@ class FilesystemReceiver implements ReceiverInterface
     private $connection;
     private $shouldStop;
 
-    public function __construct(DecoderInterface $decoder, Connection $connection)
+    public function __construct(SerializerInterface $decoder, Connection $connection)
     {
         $this->decoder = $decoder;
         $this->connection = $connection;
