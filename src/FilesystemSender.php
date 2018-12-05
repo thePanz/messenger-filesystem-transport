@@ -19,10 +19,12 @@ class FilesystemSender implements SenderInterface
         $this->connection = $connection;
     }
 
-    public function send(Envelope $envelope)
+    public function send(Envelope $envelope): Envelope
     {
         $encodedMessage = $this->encoder->encode($envelope);
 
         $this->connection->publish($encodedMessage['body'], $encodedMessage['headers']);
+
+        return $envelope;
     }
 }

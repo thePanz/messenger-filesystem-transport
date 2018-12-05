@@ -32,8 +32,8 @@ Symfony configuration: use the [Filesystem Transport Bundle](https://packagist.o
 #  config/services.yaml
 Pnz\Messenger\FilesystemTransport\FilesystemTransportFactory:
     arguments:
-        $encoder: '@messenger.transport.encoder'
-        $decoder: '@messenger.transport.decoder'
+        $encoder: '@messenger.transport.symfony_serializer'
+        $decoder: '@messenger.transport.symfony_serializer'
         # Both the "filesystem" and "lock.factory" services can be auto-wired by Symfony
         $filesystem: '@filesystem'
         $lockFactory: '@lock.factory'
