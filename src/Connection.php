@@ -130,7 +130,7 @@ class Connection
             $this->setup();
         }
 
-        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'cb+');
+        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'b+c');
         if (!$indexFile) {
             $this->lock->release();
 
@@ -155,7 +155,7 @@ class Connection
         \ftruncate($indexFile, $indexFileSize - self::LONG_BYTE_LENGTH);
         \fclose($indexFile);
 
-        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'cb+');
+        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'b+c');
         if (!$dataFile) {
             $this->lock->release();
 

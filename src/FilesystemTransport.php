@@ -5,23 +5,21 @@ declare(strict_types=1);
 namespace Pnz\Messenger\FilesystemTransport;
 
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
-use Symfony\Component\Messenger\Transport\Serialization\EncoderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\Serializer;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class FilesystemTransport implements TransportInterface
 {
-    private $encoder;
-    private $decoder;
     private $connection;
+    private $serializer;
     private $receiver;
     private $sender;
 
-    public function __construct(EncoderInterface $encoder, DecoderInterface $decoder, Connection $connection)
+    public function __construct(Connection $connection, SerializerInterface $serializer)
     {
-        $this->encoder = $encoder;
-        $this->decoder = $decoder;
         $this->connection = $connection;
+        $this->serializer = $serializer ?? Serializer::create();
     }
 
     public function receive(callable $handler): void
@@ -34,18 +32,18 @@ class FilesystemTransport implements TransportInterface
         ($this->receiver ?? $this->getReceiver())->stop();
     }
 
-    public function send(Envelope $envelope): void
+    public function send(Envelope $envelope): Envelope
     {
-        ($this->sender ?? $this->getSender())->send($envelope);
+        return ($this->sender ?? $this->getSender())->send($envelope);
     }
 
-    private function getReceiver()
+    private function getReceiver(): FilesystemReceiver
     {
-        return $this->receiver = new FilesystemReceiver($this->decoder, $this->connection);
+        return $this->receiver = new FilesystemReceiver($this->connection, $this->serializer);
     }
 
-    private function getSender()
+    private function getSender(): FilesystemSender
     {
-        return $this->sender = new FilesystemSender($this->encoder, $this->connection);
+        return $this->sender = new FilesystemSender($this->connection, $this->serializer);
     }
 }

@@ -16,17 +16,20 @@
   },
   "require": {
     "php": "^7.1",
-    "symfony/filesystem": "4.1.*",
-    "symfony/lock": "4.1.*",
-    "symfony/messenger": "4.1.*",
+    "symfony/filesystem": "^4.1",
+    "symfony/lock": "^4.1",
+    "symfony/messenger": "^4.2.0",
     "symfony/serializer-pack": "^1.0"
+  },
+  "suggest": {
+    "ext-pcntl": "For handling system level signals"
   },
   "config": {
     "sort-packages": true
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.1.x-dev"
+      "dev-master": "0.2.x-dev"
     }
   },
   "require-dev": {

@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace Pnz\Messenger\FilesystemTransport;
 
-use Symfony\Component\Messenger\Transport\ReceiverInterface;
-use Symfony\Component\Messenger\Transport\Serialization\DecoderInterface;
+use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class FilesystemReceiver implements ReceiverInterface
 {
-    private $decoder;
     private $connection;
+    private $serializer;
     private $shouldStop;
 
-    public function __construct(DecoderInterface $decoder, Connection $connection)
+    public function __construct(Connection $connection, SerializerInterface $serializer)
     {
-        $this->decoder = $decoder;
         $this->connection = $connection;
+        $this->serializer = $serializer;
+        $this->shouldStop = false;
     }
 
     public function receive(callable $handler): void
@@ -35,7 +36,7 @@ class FilesystemReceiver implements ReceiverInterface
             }
 
             try {
-                $handler($this->decoder->decode([
+                $handler($this->serializer->decode([
                     'body' => $message->body,
                     'headers' => $message->headers,
                 ]));
