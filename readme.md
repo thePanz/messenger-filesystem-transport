@@ -32,11 +32,11 @@ Symfony configuration: use the [Filesystem Transport Bundle](https://packagist.o
 #  config/services.yaml
 Pnz\Messenger\FilesystemTransport\FilesystemTransportFactory:
     arguments:
-        # All services below can be be auto-wired by Symfony
-        $serializer: '@messenger.transport.serializer'
+        $serializer: '@messenger.transport.symfony_serializer'
+        # The following lines are not needed if "autowire" is enabled
         $filesystem: '@filesystem'
         $lockFactory: '@lock.factory'
-    # Configure the tags: this enables the `filesystem://` transport to be auto-discovered
+    # Enable the `filesystem://` transport to be auto-discovered, this is not needed when "autoconfigure" is enabled
     tags: ['messenger.transport_factory']
 ```
 
