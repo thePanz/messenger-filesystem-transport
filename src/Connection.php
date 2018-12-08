@@ -88,7 +88,7 @@ class Connection
         $block = new FileQueueBlock($body, $headers);
 
         // Write the block to the data file
-        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'ab+');
+        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'a+b');
         if (!$dataFile) {
             $this->lock->release();
 
@@ -105,7 +105,7 @@ class Connection
 
         // The index file contains the list of block sizes with a fixed-length structure
         // This allows a fast fetching of blocks with a direct seek on the data-file
-        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'ab+');
+        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'a+b');
 
         if (!$dataFile) {
             $this->lock->release();
@@ -130,7 +130,7 @@ class Connection
             $this->setup();
         }
 
-        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'b+c');
+        $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'c+b');
         if (!$indexFile) {
             $this->lock->release();
 
@@ -155,7 +155,7 @@ class Connection
         \ftruncate($indexFile, $indexFileSize - self::LONG_BYTE_LENGTH);
         \fclose($indexFile);
 
-        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'b+c');
+        $dataFile = \fopen($this->getQueueFiles()[self::QUEUE_DATA_FILENAME], 'c+b');
         if (!$dataFile) {
             $this->lock->release();
 
