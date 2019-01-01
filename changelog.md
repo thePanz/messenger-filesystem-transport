@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 ### Changed
-- Support for SF 4.2
 ### Deprecated
 ### Fixed
-- Fixed issue with fopen modes (thanks to @karser)
 ### Removed
 ### Security
+
+## [0.1.3]
+### Changed
+- Support for SF 4.2
+### Fixed
+- Fixed issue with fopen modes (thanks to @karser)
 
 ## [0.1.2]
 ### Added
