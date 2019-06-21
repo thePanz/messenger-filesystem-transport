@@ -12,23 +12,22 @@ env:
 matrix:
     fast_finish: true
     include:
-          # Minimum supported dependencies with the latest and oldest PHP version
+        # Minimum supported dependencies with the latest and oldest PHP version
         - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
         - php: 7.1
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
-          # Test the latest stable release
+        # Test the latest stable release
         - php: 7.1
         - php: 7.2
           env: PHPUNIT_FLAGS="-v --coverage-text" CS=true # COVERAGE=true
 
-          # Test LTS versions. This makes sure we do not use Symfony packages with version greater
-          # than 3. Read more at https://github.com/symfony/lts
-        - php: 7.2
-          env: DEPENDENCIES="dunglas/symfony-lock:^4"
+        # Test LTS versions. This makes sure we do not use Symfony packages with version greater than 4
+        #- php: 7.2
+        #  env: SYMFONY_REQUIRE='^4.1'
 
-          # Latest commit to master
+        # Latest commit to master
         - php: 7.2
           env: STABILITY="dev"
 
@@ -42,8 +41,6 @@ before_install:
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
 install:
-    # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
-    - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
     - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
     # - ./vendor/bin/simple-phpunit install
 
