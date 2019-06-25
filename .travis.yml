@@ -46,7 +46,8 @@ install:
 
 before_script:
   - mkdir -p "$HOME/.cache"
-  - if [[ ! -f $HOME/.cache/php-cs-fixer ]]; then wget https://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O $HOME/.cache/php-cs-fixer && chmod +x $HOME/.cache/php-cs-fixer; fi
+  - if [[ ! -f $HOME/.cache/php-cs-fixer ]]; then wget https://gitreleases.dev/gh/FriendsOfPHP/PHP-CS-Fixer/latest/php-cs-fixer.phar -O $HOME/.cache/php-cs-fixer && chmod +x $HOME/.cache/php-cs-fixer; fi
+  - if [[ ! -f $HOME/.cache/phpstan ]];      then wget https://gitreleases.dev/gh/phpstan/phpstan/latest/phpstan.phar                -O $HOME/.cache/phpstan &&      chmod +x $HOME/.cache/phpstan; fi
 
 script:
     - composer validate --strict --no-check-lock
@@ -55,6 +56,7 @@ script:
     # - ./vendor/bin/simple-phpunit $PHPUNIT_FLAGS
     - ./vendor/bin/phpunit $PHPUNIT_FLAGS
     - if [[ "$CS" == "true" ]]; then $HOME/.cache/php-cs-fixer --version && $HOME/.cache/php-cs-fixer fix --verbose --diff --dry-run; fi
+    - if [[ "$CS" == "true" ]]; then $HOME/.cache/phpstan --version && $HOME/.cache/phpstan analyze src/ --level=5; fi
 
 after_success:
     # - if [[ $COVERAGE = true ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi

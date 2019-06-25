@@ -11,9 +11,24 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class FilesystemTransport implements TransportInterface
 {
+    /**
+     * @var Connection
+     */
     private $connection;
+
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
+
+    /**
+     * @var FilesystemReceiver|null
+     */
     private $receiver;
+
+    /**
+     * @var FilesystemSender|null
+     */
     private $sender;
 
     public function __construct(Connection $connection, SerializerInterface $serializer)

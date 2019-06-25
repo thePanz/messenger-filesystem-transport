@@ -10,7 +10,14 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class FilesystemSender implements SenderInterface
 {
+    /**
+     * @var Connection
+     */
     private $connection;
+
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
 
     public function __construct(Connection $connection, SerializerInterface $serializer)

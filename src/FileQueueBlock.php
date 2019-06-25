@@ -6,7 +6,14 @@ namespace Pnz\Messenger\FilesystemTransport;
 
 class FileQueueBlock
 {
+    /**
+     * @var string
+     */
     public $body = '';
+
+    /**
+     * @var string[]
+     */
     public $headers = [];
 
     /**
