@@ -51,6 +51,26 @@ class Connection
         $this->filesystem->touch($this->getQueueFiles());
     }
 
+    public function ack(FileQueueBlock $message, string $queueName): void
+    {
+        //TODO: not implemented
+    }
+
+    public function nack(FileQueueBlock $message, string $queueName): void
+    {
+        //TODO: not implemented
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getQueueNames(): array
+    {
+        return [
+            self::QUEUE_INDEX_FILENAME,
+        ];
+    }
+
     public static function fromDsn(string $dsn, Filesystem $filesystem, Factory $lockFactory, array $options = []): self
     {
         // Ensure the scheme is correct, plus the absolute path
@@ -78,12 +98,15 @@ class Connection
         return new self($path, $filesystem, $lockFactory->createLock($path), $options);
     }
 
-    public function publish(string $body, array $headers = []): void
+    public function publish(string $body, array $headers = [], FilesystemStamp $filesystemStamp = null): void
     {
         $this->lock->acquire(true);
         if ($this->shouldSetup()) {
             $this->setup();
         }
+
+        // TODO: $filesystemStamp is not used. Does this make sense?
+        // $headers = array_merge($amqpStamp ? $filesystemStamp->getAttributes() : [], $headers)
 
         $block = new FileQueueBlock($body, $headers);
 
@@ -123,7 +146,10 @@ class Connection
         $this->lock->release();
     }
 
-    public function get(): ?FileQueueBlock
+    /**
+     * TODO: $queueName is not used.
+     */
+    public function get(string $queueName): ?FileQueueBlock
     {
         $this->lock->acquire(true);
         if ($this->shouldSetup()) {
@@ -175,7 +201,7 @@ class Connection
 
         $block = \unserialize(
             $this->options['compress'] ? \gzinflate($data) : $data,
-            [FileQueueBlock::class]
+            ['allowed_classes' => [FileQueueBlock::class]]
         );
 
         return $block;
