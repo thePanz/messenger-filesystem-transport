@@ -9,8 +9,19 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class FilesystemReceiver implements ReceiverInterface
 {
+    /**
+     * @var Connection
+     */
     private $connection;
+
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
+
+    /**
+     * @var bool
+     */
     private $shouldStop;
 
     public function __construct(Connection $connection, SerializerInterface $serializer)

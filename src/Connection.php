@@ -30,7 +30,7 @@ class Connection
     private $lock;
 
     /**
-     * @var array[]
+     * @var array
      */
     private $options;
 
@@ -107,7 +107,7 @@ class Connection
         // This allows a fast fetching of blocks with a direct seek on the data-file
         $indexFile = \fopen($this->getQueueFiles()[self::QUEUE_INDEX_FILENAME], 'a+b');
 
-        if (!$dataFile) {
+        if (!$indexFile) {
             $this->lock->release();
 
             throw new \RuntimeException(\sprintf(

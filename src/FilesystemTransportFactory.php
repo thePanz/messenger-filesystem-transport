@@ -12,8 +12,19 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class FilesystemTransportFactory implements TransportFactoryInterface
 {
+    /**
+     * @var SerializerInterface
+     */
     private $serializer;
+
+    /**
+     * @var Filesystem
+     */
     private $filesystem;
+
+    /**
+     * @var Factory
+     */
     private $lockFactory;
 
     public function __construct(

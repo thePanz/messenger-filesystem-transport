@@ -6,11 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Add phpstan analysis
 ### Changed
 - Support for SF 4.3
 - Enforce fopen "b" mode in CS checks
 ### Deprecated
 ### Fixed
+- Make sure Symfony Messenger v4.2 is installed
 ### Removed
 ### Security
 
