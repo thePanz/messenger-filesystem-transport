@@ -28,20 +28,18 @@ class FilesystemTransportFactory implements TransportFactoryInterface
     private $lockFactory;
 
     public function __construct(
-        SerializerInterface $serializer,
         Filesystem $filesystem,
         Factory $lockFactory
     ) {
         $this->filesystem = $filesystem;
         $this->lockFactory = $lockFactory;
-        $this->serializer = $serializer;
     }
 
-    public function createTransport(string $dsn, array $options): TransportInterface
+    public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
         return new FilesystemTransport(
             Connection::fromDsn($dsn, $this->filesystem, $this->lockFactory, $options),
-            $this->serializer
+            $serializer
         );
     }
 

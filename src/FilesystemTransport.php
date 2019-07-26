@@ -7,9 +7,10 @@ namespace Pnz\Messenger\FilesystemTransport;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\Serializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Symfony\Component\Messenger\Transport\SetupableTransportInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
-class FilesystemTransport implements TransportInterface
+class FilesystemTransport implements TransportInterface, SetupableTransportInterface
 {
     /**
      * @var Connection
@@ -37,14 +38,24 @@ class FilesystemTransport implements TransportInterface
         $this->serializer = $serializer ?? Serializer::create();
     }
 
-    public function receive(callable $handler): void
+    public function setup(): void
     {
-        ($this->receiver ?? $this->getReceiver())->receive($handler);
+        $this->connection->setup();
     }
 
-    public function stop(): void
+    public function get(): iterable
     {
-        ($this->receiver ?? $this->getReceiver())->stop();
+        return ($this->receiver ?? $this->getReceiver())->get();
+    }
+
+    public function ack(Envelope $envelope): void
+    {
+        ($this->receiver ?? $this->getReceiver())->ack($envelope);
+    }
+
+    public function reject(Envelope $envelope): void
+    {
+        ($this->receiver ?? $this->getReceiver())->reject($envelope);
     }
 
     public function send(Envelope $envelope): Envelope
